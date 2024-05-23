@@ -45,7 +45,7 @@ export default function HeroCarousel() {
             {
                 heroImages.map((image, index) => (
                     <div key={image.alt}>
-                        <Image src={image.imgUrl} alt={image.alt} width={284} height={284} className='rounded-xl aspect-square object-cover' />
+                        <Image src={image.imgUrl} alt={image.alt} width={484} height={484} className='rounded-xl aspect-square object-cover' />
                     </div>
                 ))
             }

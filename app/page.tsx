@@ -24,7 +24,7 @@ export default function Home() {
         </div>
         {/* Carousel */}
         <div className='hero-carousel'>
-        <HeroCarousel />
+          <HeroCarousel />
         </div>
       </div>
     </section>
