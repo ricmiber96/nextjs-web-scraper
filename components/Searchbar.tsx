@@ -33,6 +33,8 @@ export default function Searchbar() {
             
         } catch (error) {
             setLoading(false)
+        } finally {
+            setLoading(false)
         }
     }
 

@@ -13,6 +13,7 @@ export async function scrapeAmazonProduct (url:string){
 
         // Get product title
         const title = $('#productTitle').text().trim()
+        console.log(title)
       
         const currentPrice = extractPrice(
             // $('#ejxu63-exa493-jwc3n7-bjv4g8'),
@@ -22,29 +23,30 @@ export async function scrapeAmazonProduct (url:string){
             $('.a-offscreen').first()
         )
 
-        const firstPriceText = $('.a-offscreen').first().text();
-        console.log(firstPriceText);
+        // const firstPriceText = $('.a-offscreen').first().text();
+        // console.log(firstPriceText);
 
-        const currency = extractCurrency('.a-price-symbol')
+        // const currency = extractCurrency('.a-price-symbol')
 
-        const outOfStock = $('#availability span').text().trim().toLowerCase() === 'currently unavailable'
+        // const outOfStock = $('#availability span').text().trim().toLowerCase() === 'currently unavailable'
         const images =  $('#imgBlkFront').attr('data-a-dynamic-image') ||  
         $('#landingImage').attr('data-a-dynamic-image') || '{}'
 
         const imageUrls = Object.keys(JSON.parse(images))
-        const discountRate = $('.savingPercentage').text().replace(/[-%]/g, '')
+        // const discountRate = $('.savingPercentage').text().replace(/[-%]/g, '')
 
-
-        // console.log({title, currentPrice, imageUrls, outOfStock, currency, discountRate})
+        console.log({title, currentPrice, imageUrls})
 
         //Construct data object with scraped data
         const data = {
             url,
-            currency: currency || 'USD',
+            // currency: currency || 'USD',
+            currency: 'USD',
             title,
             originalPrice: Number(currentPrice),
             currentPrice: Number(currentPrice),
-            discountRate: Number(discountRate),
+            // discountRate: Number(discountRate),
+            discountRate: Number(0),
             lowestPrice: Number(currentPrice) || 0,
             highestPrice: Number(currentPrice) || 0,
             averagePrice: Number(currentPrice) || 0,
@@ -53,9 +55,11 @@ export async function scrapeAmazonProduct (url:string){
             category: '',
             reviewsCount: 0,
             stars: 4.5,
-            isOutOfStock: outOfStock,
+            isOutOfStock: false,
             image: imageUrls[0],
         }
+
+        console.log("Data",data)
 
         return data
 
