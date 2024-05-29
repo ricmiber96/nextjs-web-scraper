@@ -60,3 +60,18 @@ export async function getProductById(productId: string) {
         }
     }
 }
+
+
+export async function getAllProducts() {
+    try {
+        connectToDatabase()
+        const products = await Product.find({})
+        if(!products) return []
+        return products
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to get all products: ${error.message}`)
+        }
+    }
+}
