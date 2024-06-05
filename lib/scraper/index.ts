@@ -23,6 +23,8 @@ export async function scrapeAmazonProduct (url:string){
             $('.a-offscreen').first()
         )
 
+        console.log("currentPrice", currentPrice)
+
         // const firstPriceText = $('.a-offscreen').first().text();
         // console.log(firstPriceText);
 
@@ -35,7 +37,7 @@ export async function scrapeAmazonProduct (url:string){
         const imageUrls = Object.keys(JSON.parse(images))
         // const discountRate = $('.savingPercentage').text().replace(/[-%]/g, '')
 
-        console.log({title, currentPrice, imageUrls})
+        // console.log({title, currentPrice, imageUrls})
 
         //Construct data object with scraped data
         const data = {
@@ -59,7 +61,7 @@ export async function scrapeAmazonProduct (url:string){
             image: imageUrls[0],
         }
 
-        console.log("Data",data)
+        // console.log("Data",data)
 
         return data
 

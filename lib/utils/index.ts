@@ -1,12 +1,14 @@
 
-export function extractPrice(...elements: any):string {
+export function extractPrice(...elements: any): number {
     console.log(elements.length)
     for (const element of elements) {
       const priceText = element.text().trim();
       console.log(priceText)   
       if(priceText) {
-        const cleanPrice = priceText.replace(/[^\d.]/g, '');
-        return cleanPrice;
+        const cleanPrice = priceText.replace(/[^0-9,]/g, '')
+        const dotString = cleanPrice.replace(/,/g, '.')
+        const number = parseFloat(dotString)
+        return number;
       }
     }
 

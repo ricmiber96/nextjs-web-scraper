@@ -1,5 +1,7 @@
+import Modal from '@/components/Modal'
 import PriceInfoCard from '@/components/PriceInfoCard'
-import { getProductById } from '@/lib/actions'
+import ProductCard from '@/components/ProductCard'
+import { getProductById, getSimilarProducts } from '@/lib/actions'
 import { Product } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -16,6 +18,8 @@ export default async function ProductDetails({params: {id}}: Props) {
 
     const product: Product = await getProductById(id)
     if(!product) redirect('/')
+
+    const similarProducts = await getSimilarProducts(id)
 
   return (
     <div className='product-container'>
@@ -98,8 +102,38 @@ export default async function ProductDetails({params: {id}}: Props) {
 
                     </div>
                 </div>
+                <Modal productId={id}/>
         </div>
         </div>
+        <div className='flex flex-col gap-10'>
+            <div className='flex flex-col gap-5'>
+                <h3 className='text-2xl text-secondary font-semibold'>Product Description</h3>
+            </div>
+            <div className='flex flex-col gap-5'>
+                {
+                    product?.description.split('\n')
+                }
+            </div>
+            <button className='btn w-fit mx-auto flex text-white  items-center justify-center gap-3 min-w-[200px]'>
+                <Image className='  stroke-white text-white' src='/assets/icons/bag.svg' width={30} height={30} alt='check' />
+                <Link href={'/'} className='text-base text-white'>Buy Now</Link>
+            </button>
+        </div>
+
+        {
+           similarProducts &&  similarProducts?.length > 0 && (
+                <div className='py-14 flex flex-col gap-2 w-full'>
+                    <p className='text-xl text-secondary font-semibold'>Similar Products</p>
+                    <div className='flex flex-wrap mt-7 gap-10 w-full'>
+                        {
+                            similarProducts.map((product: Product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))
+                        }
+                    </div>
+                </div>)
+        }
+
     </div>
   )
 }

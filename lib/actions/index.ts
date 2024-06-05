@@ -1,9 +1,11 @@
 "use server"
-
+import { notFound, redirect } from 'next/navigation'
 import { connectToDatabase } from "../db/mongoose"
 import Product from "../models/product.model"
 import { scrapeAmazonProduct } from "../scraper"
 import { revalidatePath } from "next/cache"
+import { User } from '@/types'
+import { generateEmailBody, sendEmail } from '../nodemailer'
 
 export async function scrapeAndStoreProduct(productUrl: string) {
     // Validate URL
@@ -32,13 +34,18 @@ export async function scrapeAndStoreProduct(productUrl: string) {
                 averagePrice:0,
 
         }
-            
+     
     }
 
     const newProduct = await Product.findOneAndUpdate({url: product.url}, product, {upsert: true, new: true})
     revalidatePath(`/products/${newProduct._id}`);
-    
-        
+    return { 
+        id: newProduct._id, 
+        title: newProduct.title
+
+    }
+;
+
     } catch (error) {
         if (error instanceof Error) {
         throw new Error(`Failed to scrape products: ${error.message}`)
@@ -74,4 +81,45 @@ export async function getAllProducts() {
             throw new Error(`Failed to get all products: ${error.message}`)
         }
     }
+}
+export async function getSimilarProducts(productId: string) {
+    try {
+        connectToDatabase()
+        const currentProduct = await Product.findById({_id: productId})
+        if(!currentProduct) return null
+        const similarProducts = await Product.find({_id: {$ne: productId}}).limit(4)
+        if(!similarProducts) return []
+        return similarProducts
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to get all products: ${error.message}`)
+        }
+    }
+}
+
+
+export async function addUserEmailToProduct(productId: string, userEmail: string) {
+    try {
+        const product = await Product.findById({_id: productId})
+        if(!product) return null
+        const userExists = product.emails.some((user: User) => user.email === userEmail)
+        if(!userExists) {
+            product.users.push({email: userEmail})
+            await product.save()
+            const emailContent = generateEmailBody(product, "WELCOME")
+            await sendEmail(emailContent, [userEmail])
+
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to add email to product: ${error.message}`)
+        }
+    }
+}
+
+
+export async function navigate(productId: string) {
+    redirect(`/products/${productId}`)
 }
