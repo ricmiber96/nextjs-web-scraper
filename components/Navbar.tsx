@@ -1,11 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import SearchBar from './SearchBar'
 
 const navIcons = [
-    {
-        src: '/assets/icons/search.svg', alt: 'search', link: '/'
-    },
     {
         src: '/assets/icons/heart.svg', alt: 'wishlist', link: '/wishlist'
     },
@@ -25,6 +23,7 @@ export default function Navbar() {
                 </p>
             </Link>
             <div className='flex items-center gap-4'>
+                <SearchBar />
                 {navIcons.map((icon, index) => (
                     <Link href={icon.link} key={icon.alt}>
                         <Image

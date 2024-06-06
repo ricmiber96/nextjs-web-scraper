@@ -74,16 +74,17 @@ export async function generateEmailBody (product: EmailProductInfo, type: Notifi
 const transporter = nodemailer.createTransport({
     pool: true,
     service: 'hotmail',
+    port: 2525,
     auth: {
-        user: '',
-        pass: ''
+        user: 'ricmiber@outlook.com',
+        pass: process.env.EMAIL_PASSWORD
     },
     maxConnections: 1
 })
 
 export async function sendEmail (emailContent:EmailContent, sendTo: string[]){
     const mailOptions = {
-        from: '',
+        from: 'ricmiber@outlook.com',
         to: sendTo,
         html: emailContent.body,
         subject: emailContent.subject,

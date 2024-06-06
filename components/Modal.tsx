@@ -23,6 +23,8 @@ export default function Modal({ productId}: Props) {
       e.preventDefault();
       setIsSubmitting(true);
 
+      console.log("productId", productId)
+      console.log("email", email)
       await addUserEmailToProduct(productId, email);
       setIsSubmitting(false);
       setEmail('');
@@ -55,9 +57,9 @@ export default function Modal({ productId}: Props) {
                 <div className='flex flex-col'>
                     <div className='flex justify-between'>
                         <Image src='/assets/icons/logo.svg' width={50} height={50} alt='close' />
-                        <button className='p-2 rounded-10 bg-white-200 cursor-pointer' onClick={closeModal}>
+                        <Button className='p-2 rounded-10 bg-white-200 cursor-pointer' onClick={closeModal}>
                         <Image src='/assets/icons/cross.svg' width={30} height={30} alt='more' />
-                        </button>
+                        </Button>
                     </div>             
                     <h4 className="dialog-head_text">
                     Stay updated with product pricing alerts right in your email!
@@ -72,7 +74,7 @@ export default function Modal({ productId}: Props) {
                         </label>
                         <div className='dialog-input_container'>
                             <Image src='/assets/icons/mail.svg' width={30} height={30} alt='email' />
-                            <input type="email" id="email" required placeholder="Enter your email" className="dialog-input" />
+                            <input type="email" id="email" onChange={(e) => setEmail(e.target.value)}  required placeholder="Enter your email" className="dialog-input" />
                         </div>
                         <button type="submit" className="dialog-btn">
                             {isSubmitting ? 'Submitting...' : 'Track'}

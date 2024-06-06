@@ -68,6 +68,20 @@ export async function getProductById(productId: string) {
     }
 }
 
+export async function getProductsByName(productName: string) {
+    try {
+        connectToDatabase()
+        const products = await Product.find({title: {$regex: productName, $options: 'i'}})
+        if(!products) return null
+        return products
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to get product by name: ${error.message}`)
+        }
+    }
+}
+
 
 export async function getAllProducts() {
     try {
@@ -102,14 +116,14 @@ export async function getSimilarProducts(productId: string) {
 export async function addUserEmailToProduct(productId: string, userEmail: string) {
     try {
         const product = await Product.findById({_id: productId})
-        if(!product) return null
-        const userExists = product.emails.some((user: User) => user.email === userEmail)
+        if(!product) return
+        const userExists = product.users.some((user: User) => user.email === userEmail)
+
         if(!userExists) {
             product.users.push({email: userEmail})
             await product.save()
-            const emailContent = generateEmailBody(product, "WELCOME")
+            const emailContent = await generateEmailBody(product, "WELCOME")
             await sendEmail(emailContent, [userEmail])
-
         }
     }
     catch (error) {

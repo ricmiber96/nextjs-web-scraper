@@ -1,5 +1,5 @@
 import HeroCarousel from '@/components/HeroCarousel'
-import Searchbar from '@/components/Searchbar'
+import InputTracker from '@/components/InputTracker'
 import Image from 'next/image'
 import React from 'react'
 import { getAllProducts } from '@/lib/actions'
@@ -11,9 +11,9 @@ export default async function Home() {
 
   return (
    <>
-    <section className="px-6 md:px-20 py-24">
+    <section className="px-6 md:px-18 py-18">
       <div className='flex max-xl:flex-col gap-16'>
-        <div className='flex flex-col justify-centeritems-center'>
+        <div className='flex flex-col justify-center'>
           <p className='text-lg flex'>
             Smart Shoppings Here
             <Image src='/assets/icons/arrow-right.svg' width={25} height={16} alt='logo' />
@@ -24,8 +24,7 @@ export default async function Home() {
           <p className='text-lg mt-6'>
             Get your shopping list ready and enjoy the best deals
           </p>
-          {/* Searchbar */}
-          <Searchbar />
+          <InputTracker />
         </div>
         {/* Carousel */}
         <div className='hero-carousel'>
