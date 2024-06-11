@@ -1,4 +1,4 @@
-export type priceHistoryItem = {
+export type PriceHistoryItem = {
     price: number;
 }
 
@@ -14,7 +14,7 @@ export type Product = {
     image: string;
     currentPrice: number;
     originalPrice: number;
-    priceHistory: priceHistoryItem[] | [];
+    priceHistory: PriceHistoryItem[] | [];
     discountRate: number;
     highestPrice: number;
     lowestPrice: number;

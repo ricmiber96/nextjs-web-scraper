@@ -4,6 +4,7 @@ import Image from 'next/image'
 import React from 'react'
 import { getAllProducts } from '@/lib/actions'
 import ProductCard from '@/components/ProductCard'
+import Link from 'next/link'
 
 export default async function Home() {
 
@@ -39,10 +40,13 @@ export default async function Home() {
       </h2>
       <div className='flex flex-wrap gap-x-8 gap-y-16'>
         {
-          allProducts?.map((product, index) => (
+          allProducts?.slice(0, 4).map((product, index) => (
               <ProductCard key={product._id} product={product} />
           ))
         }
+      </div>
+      <div className='flex items-end justify-end'>
+      <Link href='/products?page=1' className='btn text-lg font-bold bg-primary p-4'>See More</Link>
       </div>
     </section>
    </>

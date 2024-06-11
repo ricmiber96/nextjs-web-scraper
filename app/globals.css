@@ -9,6 +9,10 @@
   scroll-behavior: smooth;
 }
 
+body {
+  background-color: #F3F4F6;
+}
+
 @layer base {
   body {
     @apply font-inter;

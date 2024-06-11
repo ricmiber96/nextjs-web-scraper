@@ -29,7 +29,7 @@ export default async function SearchPage( searchParams: SearchParams) {
   return (
     <section className='px-6 md:px-20 py-24'>
       <div className='flex max-xl:flex-col gap-16 items-center justify-center'>
-      <div className='flex flex-col gap-6'>
+      <div className='grid grid-cols-4 gap-6'>
         {
           products.map((product: Product, index: number) => (
             <ProductCard key={product._id} product={product} />

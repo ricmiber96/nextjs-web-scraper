@@ -1,6 +1,6 @@
 import axios from "axios"
 import * as cheerio from "cheerio"
-import { extractCurrency, extractPrice } from "../utils"
+import { extractCurrency, extractDescription, extractDiscountRate, extractOriginalPrice, extractPrice } from "../utils"
 
 export async function scrapeAmazonProduct (url:string){
     if(!url) return
@@ -10,11 +10,8 @@ export async function scrapeAmazonProduct (url:string){
         // return scraped product
         const response = await axios.get(url)
         const $ = cheerio.load(response.data)
-
         // Get product title
         const title = $('#productTitle').text().trim()
-        console.log(title)
-      
         const currentPrice = extractPrice(
             // $('#ejxu63-exa493-jwc3n7-bjv4g8'),
             // $('.a-section .a-spacing-micro'),
@@ -23,46 +20,55 @@ export async function scrapeAmazonProduct (url:string){
             $('.a-offscreen').first()
         )
 
-        console.log("currentPrice", currentPrice)
 
         // const firstPriceText = $('.a-offscreen').first().text();
         // console.log(firstPriceText);
 
-        // const currency = extractCurrency('.a-price-symbol')
-
+        const currency = $('.a-price-symbol').first().text();
         // const outOfStock = $('#availability span').text().trim().toLowerCase() === 'currently unavailable'
         const images =  $('#imgBlkFront').attr('data-a-dynamic-image') ||  
         $('#landingImage').attr('data-a-dynamic-image') || '{}'
-
         const imageUrls = Object.keys(JSON.parse(images))
         // const discountRate = $('.savingPercentage').text().replace(/[-%]/g, '')
 
         // console.log({title, currentPrice, imageUrls})
 
+        const description = extractDescription( 
+            $('.a-unordered-list .a-vertical .a-spacing-mini').first(),
+            $('li.a-spacing-mini'),
+            $('a-list-item')
+        )
+     
         //Construct data object with scraped data
+        const originalPrice = extractOriginalPrice($('.basisPrice:contains("Precio")').first().text())
+
+
+        const discountRate = extractDiscountRate($('.reinventPriceSavingsPercentageMargin').text())
+
+
+
+        const outOfStock = $('#availability span').text().trim().toLowerCase() === 'currently unavailable';
+        
         const data = {
             url,
             // currency: currency || 'USD',
-            currency: 'USD',
+            currency,
             title,
-            originalPrice: Number(currentPrice),
-            currentPrice: Number(currentPrice),
+            originalPrice: Number(originalPrice) || Number(currentPrice),
+            currentPrice: Number(currentPrice) || Number(originalPrice),
             // discountRate: Number(discountRate),
-            discountRate: Number(0),
-            lowestPrice: Number(currentPrice) || 0,
-            highestPrice: Number(currentPrice) || 0,
-            averagePrice: Number(currentPrice) || 0,
+            discountRate: Number(discountRate),
+            lowestPrice: Number(currentPrice) || Number(originalPrice),
+            highestPrice: Number(originalPrice) || Number(currentPrice),
+            averagePrice: Number(currentPrice) || Number(originalPrice),
             priceHistory: [],
-            description: '',
+            description: description || '',
             category: '',
             reviewsCount: 0,
             stars: 4.5,
-            isOutOfStock: false,
+            isOutOfStock: outOfStock,
             image: imageUrls[0],
         }
-
-        // console.log("Data",data)
-
         return data
 
     } catch (error) {

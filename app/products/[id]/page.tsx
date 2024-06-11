@@ -24,9 +24,15 @@ export default async function ProductDetails({params: {id}}: Props) {
   return (
     <div className='product-container'>
         <div className='flex gap-28 xl:flex-row flex-col'>
-            <div className='product-image'>
-                <Image className='mx-auto' src={product.image} alt={product.title} width={580} height={400} />
-            </div>
+        <div className="product-image">
+          <Image 
+            src={product.image}
+            alt={product.title}
+            width={580}
+            height={400}
+            className="mx-auto"
+          />
+        </div>
 
         <div className='flex-1 flex flex-col'>
             <div className='flex justify-between items-start gap-5 flex-wrap pb-6'>
@@ -51,26 +57,30 @@ export default async function ProductDetails({params: {id}}: Props) {
                     </div> 
                 </div>
             </div>
-            <div className='product-info'>
+            <div className='flex justify-between'>
                     <div className='flex flex-col gap-2'>
-                        <p className='text-[34px] text-secondary font-bold'>{product.currency} {product.currentPrice}</p>
-                        <p className='text-[34px] text-black opacity-50 line-through'>{product.originalPrice}</p>
+                        <p className='text-[34px] text-primary font-bold'><span className=''> {product.currentPrice}</span> {product.currency}</p>
+                        <p className='text-[20px] text-secondary opacity-50 line-through'>{product.originalPrice}{product.currency}</p>
                     </div>
                     <div className='flex flex-col gap-4'>
                         <div className='flex gap-3'>
                             <div className='product-stars'>
-                                <Image src='/assets/icons/star.svg' width={16} height={16} alt='star' />
-                                <p className='text-base font-semibold'>{product.stars || 25}</p>
+                                {
+                                    product.discountRate !== 0 && (
+                                        <p className='text-base font-semibold'> - {product.discountRate} %</p>
+                                    )
+                                }
+                        
                             </div>
                             <div className='product-reviews'> 
                                 <Image src='/assets/icons/review.svg' width={16} height={16} alt='review' />
                                 <p className='text-sm text-secondary font-semibold'>{product.reviewsCount} Reviews</p>
                             </div>
                         </div>
-                        <p className='text-sm text-black opacity-50'>
+                        {/* <p className='text-sm text-black opacity-50'>
                             <span className='text-primary-green font-semibold'> 93% </span>
                             <span className='text-secondary'>of buyers have recommended this product!</span>
-                        </p>
+                        </p> */}
                     </div>
                 </div>
                 <div className='my-7 flex-col gap-4'>
@@ -78,25 +88,25 @@ export default async function ProductDetails({params: {id}}: Props) {
                         <PriceInfoCard 
                             title = "Current Price"
                             iconSrc = '/assets/icons/current-price.svg'
-                            value={`${product.currentPrice}`}
+                            value={`${product.currentPrice} ${product.currency}`}
                             borderColor="#b6dbff"
                         />
                         <PriceInfoCard 
                             title = "Average Price"
                             iconSrc = '/assets/icons/chart.svg'
-                            value={`${product.currentPrice}`}
+                            value={`${product.averagePrice} ${product.currency}`}
                             borderColor="#b6dbff"
                         />
                         <PriceInfoCard 
                             title = "Highest Price"
                             iconSrc = '/assets/icons/arrow-up.svg'
-                            value={`${product.currentPrice}`}
+                            value={`${product.highestPrice} ${product.currency}`}
                             borderColor="#b6dbff"
                         />
                         <PriceInfoCard 
                             title = "Lowest Price"
                             iconSrc = '/assets/icons/arrow-down.svg'
-                            value={`${product.currentPrice}`}
+                            value={`${product.lowestPrice} ${product.currency}`}
                             borderColor="#b6dbff"
                         />
 
@@ -106,25 +116,31 @@ export default async function ProductDetails({params: {id}}: Props) {
         </div>
         </div>
         <div className='flex flex-col gap-10'>
-            <div className='flex flex-col gap-5'>
-                <h3 className='text-2xl text-secondary font-semibold'>Product Description</h3>
-            </div>
-            <div className='flex flex-col gap-5'>
-                {
-                    product?.description.split('\n')
-                }
-            </div>
+            {
+                product?.description && (
+                    <div>
+                        <div className='flex flex-col gap-5'>
+                            <h3 className='text-2xl text-secondary font-semibold'>Product Description</h3>
+                        </div>
+                        <div className='flex flex-col gap-5'>
+                            {
+                                product?.description.split('\n')
+                            }
+                        </div>
+                    </div>
+                )
+            }
             <button className='btn w-fit mx-auto flex text-white  items-center justify-center gap-3 min-w-[200px]'>
                 <Image className='  stroke-white text-white' src='/assets/icons/bag.svg' width={30} height={30} alt='check' />
-                <Link href={'/'} className='text-base text-white'>Buy Now</Link>
+                <Link href={product.url} target='_blank' className='text-base text-white'>Buy Now</Link>
             </button>
         </div>
 
         {
            similarProducts &&  similarProducts?.length > 0 && (
                 <div className='py-14 flex flex-col gap-2 w-full'>
-                    <p className='text-xl text-secondary font-semibold'>Similar Products</p>
-                    <div className='flex flex-wrap mt-7 gap-10 w-full'>
+                    <p className='text-2xl text-secondary font-semibold'>🛒 Others Products</p>
+                    <div className='flex flex-wrap mt-7 gap-6 w-full'>
                         {
                             similarProducts.map((product: Product) => (
                                 <ProductCard key={product._id} product={product} />
