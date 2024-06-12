@@ -53,7 +53,7 @@ export default async function ProductDetails({params: {id}}: Props) {
                         <Image src='/assets/icons/bookmark.svg' width={30} height={30} alt='bookmark' />
                     </div> 
                     <div className='p-2 rounded-10 bg-white-200'>
-                        <Image src='/assets/icons/share.svg' width={30} height={30} alt='share' />
+                        <Image src='/assets/icons/copy.svg' width={30} height={30} alt='share' />
                     </div> 
                 </div>
             </div>
