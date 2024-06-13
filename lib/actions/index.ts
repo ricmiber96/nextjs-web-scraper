@@ -8,6 +8,8 @@ import { User } from '@/types'
 import { generateEmailBody, sendEmail } from '../nodemailer'
 import { getAveragePrice, getHighestPrice, getLowestPrice } from '../utils'
 import { NextApiRequest, NextApiResponse } from 'next'
+import axios from 'axios'
+import { json } from 'stream/consumers'
 
 export async function scrapeAndStoreProduct(productUrl: string) {
     // Validate URL
@@ -55,13 +57,27 @@ export async function scrapeAndStoreProduct(productUrl: string) {
     }
 
 }
-
+//SERVER SIDE CODE 
+// export async function getProductById(productId: string) {
+//     try {
+//         connectToDatabase()
+//         const product = await Product.findById({_id: productId})
+//         if(!product) return null
+//         return product
+//     }
+//     catch (error) {
+//         if (error instanceof Error) {
+//             throw new Error(`Failed to get product by ID: ${error.message}`)
+//         }
+//     }
+// }
+// CLIENT SIDE CODE
 export async function getProductById(productId: string) {
     try {
         connectToDatabase()
         const product = await Product.findById({_id: productId})
         if(!product) return null
-        return product
+        return JSON.parse(JSON.stringify(product))
     }
     catch (error) {
         if (error instanceof Error) {
@@ -69,6 +85,25 @@ export async function getProductById(productId: string) {
         }
     }
 }
+
+// export async function getProductById(productId: string) {
+//     if (!productId) {
+//         console.error('Error: Product ID is not provided');
+//         return null;
+//       }
+//     try {
+//         const response = await axios.get(`/api/products/${productId}/`);
+//         if (!response) {
+//           throw new Error('Failed to fetch product');
+//         }
+//         const product = await response.data;
+//         return product;
+//       } catch (error) {
+//         console.error('Error fetching product:', error);
+//         return null;
+//       }
+// }
+
 
 export async function getProductsByName(productName: string) {
     try {
@@ -97,7 +132,15 @@ export async function getProductsPaginated(page: number) {
         const products = await Product.find({}).skip(skip).limit(limitAsNumber).exec()
         const totalProducts = await Product.countDocuments({}).exec()
         const totalPages = Math.ceil(totalProducts / limitAsNumber)
-        if(!products) return null
+        if(!products){
+            return {
+                products: [],
+                totalPages: 1,
+                currentPage: 1
+            }
+
+        } 
+
         return {
             products,  
             totalPages,
@@ -106,7 +149,7 @@ export async function getProductsPaginated(page: number) {
     }
     catch (error) {
         if (error instanceof Error) {
-            throw new Error(`Failed to get product by name: ${error.message}`)
+            throw new Error(`Failed to get products: ${error.message}`)
         }
     }
 }
@@ -124,6 +167,20 @@ export async function getAllProducts() {
             throw new Error(`Failed to get all products: ${error.message}`)
         }
     }
+}
+
+export async function getTrendingProducts() {
+    try {
+        connectToDatabase()
+        const products = await Product.find({}).sort({likes: -1}).limit(4)
+        if(!products) return []
+        return products
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to get trending products: ${error.message}`)
+        }
+    } 
 }
 export async function getSimilarProducts(productId: string) {
     try {
@@ -162,6 +219,30 @@ export async function addUserEmailToProduct(productId: string, userEmail: string
     }
 }
 
+
+export async function toggleUserLike(productId: string, userId: string) {
+    try {
+        const product = await Product.findById({_id: productId})
+        console.log(typeof userId)
+        if(!product) return
+        const userIndex = product.likedByUsers.findIndex((user: string) => user === userId)
+        console.log("userIndex", userIndex)
+        if(userIndex === -1) {
+            product.likedByUsers.push(userId)
+            product.likes += 1
+        } else {
+            product.likedByUsers.splice(userIndex, 1)
+            product.likes -= 1
+        }
+        await product.save()
+        return JSON.parse(JSON.stringify(product))
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to toggle user like: ${error.message}`)
+        }
+    }
+}
 
 export async function navigate(productId: string) {
     redirect(`/products/${productId}`)

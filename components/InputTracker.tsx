@@ -1,8 +1,9 @@
 "use client"
 import { scrapeAndStoreProduct } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Toaster, toast } from 'sonner';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function InputTracker() {
 
@@ -10,6 +11,16 @@ export default function InputTracker() {
     const [search, setSearch] = useState('')
     const [loading, setLoading] = useState(false)
 
+    useEffect(() => {
+        if(typeof window !== 'undefined') {
+            const userId = localStorage.getItem('userId')
+            if (!userId) {
+              localStorage.setItem('userId', uuidv4())
+            }
+          }
+    }, [])
+
+ 
 
     const isValidAmazonLink = (link: string) => {
         console.log("link", link)

@@ -15,9 +15,6 @@ export default async function ProductsPage({searchParams}: any) {
     const prevPage = page - 1 > 0 ? page - 1 : 1;
     const nextPage = page + 1 > totalPages ? page : page + 1;
 
-
-
-
     console.log("totalPages", totalPages)
     console.log("currentPage", currentPage)
     console.log("products", products.length)

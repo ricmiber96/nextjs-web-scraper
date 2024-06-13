@@ -21,7 +21,9 @@ const productSchema = new mongoose.Schema({
     description: {type: String},
     category: {type: String},
     reviewsCount: {type: Number},
+    likes: {type: Number, default: 0},
     isOutOfStock: {type: Boolean, default: false},
+    likedByUsers: [{type: String, default: []}],
     users: [
         {email: {type: String, required: true}}
 

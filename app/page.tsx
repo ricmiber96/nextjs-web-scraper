@@ -2,14 +2,14 @@ import HeroCarousel from '@/components/HeroCarousel'
 import InputTracker from '@/components/InputTracker'
 import Image from 'next/image'
 import React from 'react'
-import { getAllProducts } from '@/lib/actions'
+import { getAllProducts, getTrendingProducts } from '@/lib/actions'
 import ProductCard from '@/components/ProductCard'
 import Link from 'next/link'
 
 export default async function Home() {
 
-  const allProducts = await getAllProducts()
-
+  const trendingProducts = await getTrendingProducts()
+  
   return (
    <>
     <section className="px-6 md:px-18 py-18">
@@ -40,7 +40,7 @@ export default async function Home() {
       </h2>
       <div className='flex flex-wrap gap-x-8 gap-y-16'>
         {
-          allProducts?.slice(0, 4).map((product, index) => (
+          trendingProducts?.map((product, index) => (
               <ProductCard key={product._id} product={product} />
           ))
         }

@@ -62,5 +62,5 @@ export const getAveragePrice = (pricesHistory: PriceHistoryItem[]): number => {
   const sumOfPrices = pricesHistory.reduce((acc, curr) => acc + curr.price, 0);
   const averagePrice = sumOfPrices / pricesHistory.length || 0;
 
-  return averagePrice;
+  return parseFloat(averagePrice.toFixed(2));
 }
